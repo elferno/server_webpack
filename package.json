@@ -10,11 +10,21 @@
     "type": "git",
     "url": "git+https://github.com/elferno/server_webpack.git"
   },
-  "keywords": [],
-  "author": "Elijah Ivanik",
+  "keywords": [
+    "native js",
+    "node",
+    "webpack"
+  ],
+  "author": "Elijah Ivanik <elferno@inbox.ru>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/elferno/server_webpack/issues"
   },
-  "homepage": "https://github.com/elferno/server_webpack#readme"
+  "homepage": "https://github.com/elferno/server_webpack#readme",
+  "devDependencies": {
+    "del": "^5.1.0",
+    "html-webpack-plugin": "^4.3.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
 }

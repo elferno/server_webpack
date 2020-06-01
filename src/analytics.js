@@ -13,7 +13,7 @@ CreateAnalytics.prototype = {
   },
 
   getClicks() {
-    if (this.destroyed) return 'Analytics is destroyed'
+    if (this.destroyed) return `Analytics is destroyed. Total counter was: ${this.counter}`
     return this.counter
   }
 }
