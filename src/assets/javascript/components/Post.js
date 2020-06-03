@@ -10,7 +10,7 @@ export default class Post {
       title: this.title,
       logo: this.logo,
       date: this.date.toJSON()
-    })
+    }, null, 2)
   }
 
   get uppercaseTitle() {

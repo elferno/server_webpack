@@ -1,20 +1,30 @@
 const path = require('path')
+const devMode = process.env.NODE_ENV === 'development'
 
 module.exports = {
-  dist: path.resolve(__dirname, 'dist'),
+  root: path.resolve(__dirname, devMode ? 'dist' : 'production'),
   src : path.resolve(__dirname, 'src'),
 
-  dev : {
+  alias : {
     components: path.resolve(__dirname, 'src/assets/javascript/components'),
     styles    : path.resolve(__dirname, 'src/assets/styles'),
     images    : path.resolve(__dirname, 'src/assets/images'),
+
     cssBlocks : path.resolve(__dirname, 'src/assets/styles/blocks'),
-    cssVar    : path.resolve(__dirname, 'src/assets/styles/_var.css')
+    cssVar    : path.resolve(__dirname, 'src/assets/styles/_var.css'),
+
+    json      : path.resolve(__dirname, 'src/assets/json'),
+    xml       : path.resolve(__dirname, 'src/assets/xml')
   },
 
   html: {
     index : path.resolve(__dirname, 'src', 'index.html'),
     src   : path.resolve(__dirname, 'src')
+  },
+
+  favicon: {
+    icon      : path.resolve(__dirname, 'src', 'favicon.ico'),
+    output    : path.resolve(__dirname, 'dist')
   },
 
   images: {
@@ -23,6 +33,10 @@ module.exports = {
 
   font: {
     output    : './assets/fonts/[name].[contenthash].[ext]'
+  },
+
+  css : {
+    output    : './assets/css/[name].[contenthash].css'
   },
 
   js  : {

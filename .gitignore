@@ -1,4 +1,5 @@
 .idea/
 .git/
 dist/
+production/
 node_modules/
