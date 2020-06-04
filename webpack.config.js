@@ -3,31 +3,54 @@ const path = require('./path.config.js')
 const HTMLWebpackPlugin = require('html-webpack-plugin')        // собрать HTML в dist
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')    // удаляет старые экземпляры файлов при сборке
 const CopyWebpackPlugin = require('copy-webpack-plugin')        // просто копирует какие-то файлы
-const MiniCssExtractPlugin = require('mini-css-extract-plugin') // отделяет css от js в отдельный файл при сборке
-const OptimiseCssWebpackAssetsPlugin = require('optimize-css-assets-webpack-plugin') // для минификации css
-const TerserWebpackPlugin = require('terser-webpack-plugin')    //
+const MiniCssExtractPlugin = require('mini-css-extract-plugin') // отделяет CSS от JS в отдельный файл при сборке
+const OptimiseCssWebpackAssetsPlugin = require('optimize-css-assets-webpack-plugin') // для минификации CSS
+const TerserWebpackPlugin = require('terser-webpack-plugin')    // для минификации JS
+
 
 
 // ####################### PRODUCTION/DEV MODE VARIABLES ####################### //
 const devMode = process.env.NODE_ENV === 'development'
 const vars = {
+  devtool: '',
+
+  // javascript loader
+  jsLoader: [
+    { loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env'],
+        plugins: ['@babel/plugin-proposal-class-properties']
+      }
+    }
+  ],
+
+  // горячая перезагрузка модулей
   hotModuleReload: false,
 
-  minify: {
+  // минификация HTML
+  minifyHTML: {
     collapseWhitespace: true
   },
 
-  minimizer: [
+  // минификация CSS и JS
+  minifyJSnCSS: [
     new OptimiseCssWebpackAssetsPlugin(),
     new TerserWebpackPlugin()
   ]
 }
 
 if (devMode) {
+  vars.jsLoader.push( {loader: 'eslint-loader'} )
+  vars.devtool = 'inline-source-map'
   vars.hotModuleReload = true
-  vars.minify = false
-  vars.minimizer = []
+  vars.minifyHTML = false
+  vars.minifyJSnCSS = []
 }
+
+// список директориев, которые не надо парсить в поисках файлов для обработки
+const exclude = [/dist/, /production/, /node_modules/]
+
+
 
 
 
@@ -38,7 +61,8 @@ module.exports = {
   // ####################### ENTRY / OUTPUT ####################### //
   mode: 'development',
   entry: {
-    main: path.js.index,
+    // когда собираем "main" - так же пользуемся babel-полифилом
+    main: ['@babel/polyfill', path.js.index],
     analytics: path.js.analytics
   },
   output: {
@@ -55,7 +79,7 @@ module.exports = {
       chunks: 'all'
     },
     minimizer:
-      vars.minimizer
+      vars.minifyJSnCSS
   },
 
 
@@ -66,7 +90,7 @@ module.exports = {
       '.js',
       '.json',
       '.xml',
-      '.css'
+      '.scss'
     ],
     alias: {
       '@components': path.alias.components,
@@ -87,7 +111,7 @@ module.exports = {
     // в этот файл будут подключены все js и css
     new HTMLWebpackPlugin({
       template: path.html.index,
-      minify: vars.minify
+      minify: vars.minifyHTML
     }),
 
     // удаляет старые экземпляры файлов
@@ -96,7 +120,7 @@ module.exports = {
     // просто копирует какие-то файлы
     new CopyWebpackPlugin({
       patterns: [
-        {from: path.favicon.icon, to: path.favicon.output}
+        { from: path.favicon.icon, to: path.favicon.output }
       ],
     }),
 
@@ -110,11 +134,10 @@ module.exports = {
   // ####################### LOADERS ####################### //
   module: {
     rules: [
-
-      // css
+      // sass, scss
       {
-        test: /\.css$/,
-        exclude: /node_modules/,
+        test: /\.s[a|c]ss$/,
+        exclude: exclude,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -124,14 +147,15 @@ module.exports = {
               reloadAll: true
             }
           },
-          {loader: 'css-loader'}
+          { loader: 'css-loader' },
+          { loader: 'sass-loader' }
         ]
       },
 
       // images
       {
         test: /\.(png|svg|jpg|gif)$/,
-        exclude: /node_modules/,
+        exclude: exclude,
         loader: 'file-loader',
         options: {
           publicPath: '../../',
@@ -142,7 +166,7 @@ module.exports = {
       // fonts
       {
         test: /\.(ttf|woff|woff2|eot)$/,
-        exclude: /node_modules/,
+        exclude: exclude,
         loader: 'file-loader',
         options: {
           publicPath: '../../',
@@ -155,6 +179,25 @@ module.exports = {
         test: /\.xml$/,
         exclude: /node_modules/,
         use: ['xml-loader']
+      },
+
+      // js
+      {
+        test: /\.js$/,
+        exclude: exclude,
+        use: vars.jsLoader,
+
+      },
+
+      // react
+      {
+        test: /\.jsx$/,
+        exclude: exclude,
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+          plugins: ['@babel/plugin-proposal-class-properties']
+        }
       }
 
     ]
@@ -162,6 +205,7 @@ module.exports = {
 
 
   // ####################### DEV-SERVER ####################### //
+  devtool: vars.devtool,
   devServer: {
     port: 4200,
 

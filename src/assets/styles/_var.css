@@ -1,9 +1,0 @@
-@font-face {
-  font-family: 'roboto';
-  src: url("../fonts/roboto.ttf") format('truetype');
-}
-
-body {
-  --font: bold 30px roboto, sans-serif;
-  --white: #FFF;
-}

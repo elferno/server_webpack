@@ -1,16 +1,14 @@
-import * as $ from 'jquery'
-
 function CreateAnalytics() {
   this.counter = 0
   this.destroyed = false
   this.listener = () => this.counter++
 
-  $(document).on('click', this.listener)
+  document.addEventListener('click', this.listener)
 }
 
 CreateAnalytics.prototype = {
   destroy() {
-    $(document).off('click', this.listener)
+    document.removeEventListener('click', this.listener)
     this.destroyed = true
   },
 
