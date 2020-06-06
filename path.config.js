@@ -2,8 +2,10 @@ const path = require('path')
 const devMode = process.env.NODE_ENV === 'development'
 const filename = devMode ? '[name]' : '[name].[contenthash]'
 const root = devMode ? 'dist' : 'production'
+const server = devMode ? 'http://localhost:8000/' : 'http://localhost:63342/server_webpack/production/'
 
 module.exports = {
+  host: server,
   root: path.resolve(__dirname, root),
   src : path.resolve(__dirname, 'src'),
 
@@ -30,21 +32,21 @@ module.exports = {
   },
 
   images: {
-    output    : `./assets/images/${filename}.[ext]`
+    output    : `assets/images/${filename}.[ext]`
   },
 
   font: {
-    output    : `./assets/fonts/${filename}.[ext]`
+    output    : `assets/fonts/${filename}.[ext]`
   },
 
   css : {
-    output    : `./assets/css/${filename}.css`
+    output    : `assets/css/${filename}.css`
   },
 
   js  : {
     index     : path.resolve(__dirname, 'src/assets/javascript', 'index.jsx'),
     analytics : path.resolve(__dirname, 'src/assets/javascript', 'analytics.js'),
     src       : path.resolve(__dirname, 'src/assets/javascript'),
-    output    : `./assets/js/${filename}.js`
+    output    : `assets/js/${filename}.js`
   }
 }

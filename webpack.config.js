@@ -158,7 +158,9 @@ module.exports = {
         exclude: exclude,
         loader: 'file-loader',
         options: {
-          publicPath: '../../',
+          esModule: false,
+          path: path.root,
+          publicPath: path.host,
           name: path.images.output
         }
       },
@@ -169,7 +171,8 @@ module.exports = {
         exclude: exclude,
         loader: 'file-loader',
         options: {
-          publicPath: '../../',
+          path: path.root,
+          publicPath: path.host,
           name: path.font.output
         }
       },
@@ -207,8 +210,7 @@ module.exports = {
   // ####################### DEV-SERVER ####################### //
   devtool: vars.devtool,
   devServer: {
-    port: 4200,
-
+    port: 8000,
     // hot module reload
     hot: vars.hotModuleReload
   }
