@@ -172,7 +172,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           path: path.root,
-          publicPath: path.host,
+          publicPath: '../../',
           name: path.font.output
         }
       },
